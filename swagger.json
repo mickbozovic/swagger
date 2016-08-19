@@ -54,7 +54,7 @@
                 "tags": [
                     "config"
                 ],
-                "summary": "Find pet by ID",
+                "summary": "Find config by pid",
                 "description": "Returns a configuration for a provided pid",
                 "operationId": "getConfigById",
                 "produces": [
