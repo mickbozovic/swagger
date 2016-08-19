@@ -11,7 +11,7 @@
             "name": "TBD"
         }
     },
-    "host": "api.netgazer.com.au",
+    "host": "localhost",
     "basePath": "/mlnms/api/v1",
     "schemes": [
         "http"
@@ -26,18 +26,16 @@
                 "description": "",
                 "operationId": "addConfig",
                 "consumes": [
-                    "application/json",
-                    "application/xml"
+                    "application/json"
                 ],
                 "produces": [
-                    "application/json",
-                    "application/xml"
+                    "application/json"
                 ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "Config object that needs to be added to the store",
+                        "description": "Config object that needs to be added to the application",
                         "required": false,
                         "schema": {
                             "$ref": "#/definitions/Config"
@@ -57,17 +55,16 @@
                     "config"
                 ],
                 "summary": "Find pet by ID",
-                "description": "Returns a pet when ID < 10.  ID > 10 or nonintegers will simulate API error conditions",
+                "description": "Returns a configuration for a provided pid",
                 "operationId": "getConfigById",
                 "produces": [
-                    "application/json",
-                    "application/xml"
+                    "application/json"
                 ],
                 "parameters": [
                     {
                         "in": "path",
                         "name": "pid",
-                        "description": "ID of config that needs to be fetched",
+                        "description": "pid of config that needs to be fetched",
                         "required": true,
                         "type": "string"
                     }
@@ -92,21 +89,19 @@
                     "config"
                 ],
                 "summary": "Update an existing config",
-                "description": "",
+                "description": "Update an existing config",
                 "operationId": "updateConfig",
                 "consumes": [
-                    "application/json",
-                    "application/xml"
+                    "application/json"
                 ],
                 "produces": [
-                    "application/json",
-                    "application/xml"
+                    "application/json"
                 ],
                 "parameters": [
                     {
                         "in": "path",
                         "name": "pid",
-                        "description": "ID of config that needs to be fetched",
+                        "description": "pid of config that needs to be fetched",
                         "required": true,
                         "type": "string"
                     }
@@ -128,11 +123,10 @@
                     "config"
                 ],
                 "summary": "Deletes a config",
-                "description": "",
+                "description": "Deletes a config",
                 "operationId": "deleteConfig",
                 "produces": [
-                    "application/json",
-                    "application/xml"
+                    "application/json"
                 ],
                 "parameters": [
                     {
@@ -176,236 +170,6 @@
                 "responses": {
                     "default": {
                         "description": "successful operation"
-                    }
-                }
-            }
-        },
-        "/users/createWithArray": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Creates list of users with given input array",
-                "description": "",
-                "operationId": "createUsersWithArrayInput",
-                "produces": [
-                    "application/json",
-                    "application/xml"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "List of user object",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/User"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                }
-            }
-        },
-        "/users/createWithList": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Creates list of users with given input array",
-                "description": "",
-                "operationId": "createUsersWithListInput",
-                "produces": [
-                    "application/json",
-                    "application/xml"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "List of user object",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/User"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                }
-            }
-        },
-        "/users/login": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Logs user into the system",
-                "description": "",
-                "operationId": "loginUser",
-                "produces": [
-                    "application/json",
-                    "application/xml"
-                ],
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "username",
-                        "description": "The user name for login",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "password",
-                        "description": "The password for login in clear text",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid username/password supplied"
-                    }
-                }
-            }
-        },
-        "/users/logout": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Logs out current logged in user session",
-                "description": "",
-                "operationId": "logoutUser",
-                "produces": [
-                    "application/json",
-                    "application/xml"
-                ],
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                }
-            }
-        },
-        "/users/{username}": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get user by user name",
-                "description": "",
-                "operationId": "getUserByName",
-                "produces": [
-                    "application/json",
-                    "application/xml"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "username",
-                        "description": "The name that needs to be fetched. Use user1 for testing.",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid username supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Updated user",
-                "description": "This can only be done by the logged in user.",
-                "operationId": "updateUser",
-                "produces": [
-                    "application/json",
-                    "application/xml"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "username",
-                        "description": "name that need to be deleted",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "Updated user object",
-                        "required": false,
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid user supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Delete user",
-                "description": "This can only be done by the logged in user.",
-                "operationId": "deleteUser",
-                "produces": [
-                    "application/json",
-                    "application/xml"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "username",
-                        "description": "The name that needs to be deleted",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid username supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
                     }
                 }
             }
@@ -457,6 +221,23 @@
                 "pid": {
                     "type": "string",
                     "description": "persistentce id"
+                },
+                "config-items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ConfigItem"
+                    }
+                }
+            }
+        },
+        "ConfigItem": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
                 }
             }
         }
