@@ -1,0 +1,1102 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: NGZ API
+  description: QA2 Middleware API
+  version: "1.0.0"
+# the domain of the service
+host: 10.10.103.209:80
+# array of all schemes that your API supports
+schemes:
+  - http
+produces:
+  - application/application/octet-stream
+# will be prefixed to all paths
+basePath: /mlnms/api/v1
+paths:
+# User management, registration, update and login
+  /nms/login:
+    post:
+      summary: Client login.
+      description: |
+        A user running NetGazer client software trying to login and connect to the middleware.
+      parameters:
+        - name: requestId
+          in: query
+          type: string
+          description: Identifier of the request.
+          required: true
+        - name: login
+          in: body
+          required: true
+          description: |
+            userinfo.
+            'test data: '
+            'username: admin'
+            'passwork: admin1@A'
+          schema:
+            $ref: '#/definitions/login'
+      tags:
+        - user
+            
+      responses:
+        200:
+          description: Client login onto proxy server successfully
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /nms/logout:
+    get:
+      summary: Logout
+      description: |
+        Logout
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+      tags:
+        - user
+      
+      responses:
+        200:
+          description: Logout successfully.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /nms/users:
+    post:
+      summary: Create a new user
+      description: Create a new user (normal user, admin, ultra supper user)
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: UserCreation
+          in: body
+          description: user name, password, personal info
+          required: true
+          schema:
+            $ref: '#/definitions/userCreation'
+      tags:
+        - user
+  
+      responses:
+        200:
+          description: User created successfully.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+      
+    put:
+      summary: Update user info
+      description: Update user info (normal user, admin, ultra supper user)
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: UserCreation
+          in: body
+          description: user name, password, personal info
+          required: true
+          schema:
+            $ref: '#/definitions/userCreation'
+      tags:
+        - user
+  
+      responses:
+        200:
+          description: User created successfully.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+      
+    get:
+      summary: Retrieve user list
+      description: Return a list of all users
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+      tags:
+        - user
+  
+      responses:
+        200:
+          description: User list retrieved successfully.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  
+  # Device discovery
+  /discover/inventory:
+    post:
+      summary: Returns devices info in the inventory
+      description: Returns devices info in the inventory
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: InventoryDeviceNumber.
+          in: body
+          description: |
+            number of traps to retrieve.
+            'test data: 10'
+          required: true
+          schema:
+            $ref: '#/definitions/InventoryDeviceNumber'
+      tags:
+        - device discovery
+  
+      responses:
+        200:
+          description: Typeahead processed successfully.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  
+  /discover/controller:
+    post:
+      summary: Controller Request
+      description: |
+        Request shallow discovery for an IP address
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Identifier of the request.
+          required: true
+        - name: body
+          in: body
+          required: true
+          description: |
+            controller info
+            'test data: '
+            'roString: public'
+            'rwString: public'
+            'address: 172.16.110.11'
+            'correlationId: cd987b55-e7da-4722-b155-cfb21240654d'
+          schema:
+            $ref: '#/definitions/DeviceDiscovery'
+      tags:
+        - device discovery
+        
+      responses:
+        200:
+          description: An IP address discovered
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /discover/submodule:
+    post:
+      summary: Get submodule info
+      description: |
+        Request full discovery for the given IP address (must be tested after sending a request to /discover/controller/)
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: submodule
+          in: body
+          description: |
+            device id.
+          required: true
+          schema:
+            $ref: '#/definitions/DeviceDiscovery'
+      tags:
+        - device discovery
+
+      responses:
+        200:
+          description: Submodule devices info retrieved.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /deviceview/chassis:
+    get:
+      summary: Poll device view
+      description: |
+        Retrieve the full information collected by discovery and polling.
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: id
+          in: query
+          description: An unique device identifier.
+          required: true
+          type: string
+      tags:
+        - device discovery
+      
+      responses:
+        200:
+          description: Currently empty.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+      
+# Search in the database
+  /search/typeahead:
+    post:
+      summary: Returns typeahead suggestions for partial query string
+      description: Returns typeahead suggestions for partial query string
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: Number
+          in: body
+          description: |
+            query content.
+            'testdata: '
+            'queryString: fukushi'
+            'includeRefiners: true'
+          required: true
+          schema:
+            $ref: '#/definitions/query'
+      tags:
+        - search in database
+  
+      responses:
+        200:
+          description: Typeahead processed successfully.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  
+  /search/query:
+    post:
+      summary: Query Request
+      description: Returns full result list and refiners for partial query string
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: Query
+          in: body
+          description: |
+            query content.
+            'testdata: '
+            'queryString: "45 B"'
+            'includeRefiners: true'
+          required: true
+          schema:
+            $ref: '#/definitions/query'
+      tags:
+        - search in database
+  
+      responses:
+        200:
+          description: Query issued successfully.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  
+  # Traps, events and alarms
+  /traps/list:
+    post:
+      summary: Retrieve a list of traps
+      description: Retrieve a list of traps
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: Number
+          in: body
+          description: |
+            number of traps to retrieve.
+            'test data: '
+            'number: 2000'
+          required: true
+          schema:
+            $ref: '#/definitions/TrapNumber'
+      tags:
+        - trap
+          
+      responses:
+        200:
+          description: Traps info retrieved.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+    
+  /capabilities/events:
+    get:
+      summary: Get traps event
+      description: |
+        Retrieve all trap event info.
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: search
+          in: query
+          type: string
+          required: true
+          description: |
+            json string specifying device id.
+            'test data:'
+            'search: {"deviceUuid":"d391e44a-79a5-4b9e-bce5-1d87c0823b5a","type":"Traps"}'
+      tags:
+        - event
+            
+      responses:
+        200:
+          description: Event data received.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /capabilities/alarms:
+    get:
+      summary: Get alarms severity
+      description: |
+        Retrieve all alarms support currently of a device.
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+      tags:
+        - alarms
+            
+      responses:
+        200:
+          description: Alarm list received.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /devices/alarms:
+    get:
+      summary: Alarm Actions
+      description: |
+        Alarm Actions
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+      tags:
+        - alarm
+      
+      responses:
+        200:
+          description: Alarm info retrieved.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+  /devices/alarms-config:
+    get:
+      summary: Retrieve alarm configerations
+      description: |
+        Retrieve alarm configerations (Currently this api on middleware not working)
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+      tags:
+        - alarm
+      
+      responses:
+        200:
+          description: Alarm config info retrieved.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+    post:
+      summary: Create a new alarm configeration
+      description: |
+        Create a new alarm configeration.
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: config
+          in: body
+          description: |
+            Alarm configuration.
+          required: true
+          schema:
+            $ref: '#/definitions/alarmConfig'
+      tags:
+        - alarm
+      
+      responses:
+        200:
+          description: Alarm config created.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+
+# Topology network management, and update
+  /topology/links:
+    get:
+      summary: Get all Links
+      description: |
+        Get all topology Links.
+      parameters:
+        - name: Authorization
+          in: header
+          description: User authorization token
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+      tags:
+        - topology
+      
+      responses:
+        200:
+          description: Topology links info retrieved.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  
+  /topology/map/x/y/z.png:
+    get:
+      summary: Returns a map tile of topology (the url is related to the name of the image specified at the end, which could not be tested by swagger).
+      description: |
+        Returns a map tile of topology given x,y,z coordinate.
+      parameters:
+        - name: Authorization
+          in: header
+          description: User authorization token.
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+      tags:
+        - topology
+    
+      responses:
+        200:
+          description: Topology map tile retrieved.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+      
+  
+  /topology/layer:
+    post:
+      summary: Retrieve topology layers (currently not implemented)
+      description: |
+        Get all the sites and links in json format.
+      parameters:
+        - name: Authorization
+          in: header
+          description: User authorization token
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: Content
+          in: body
+          description: currently an empty string
+          required: true
+          schema:
+            $ref: '#/definitions/layer'
+      tags:
+        - topology
+    
+      responses:
+        200:
+          description: Topology layers retrieved.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  
+  /topology/locations:
+    get:
+      summary: Get topology location
+      description: |
+        Returns all locations of a given type
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: search
+          in: query
+          type: string
+          description: |
+            Topology location.
+            'test data: '
+            'search: {type:SITE}'
+          required: true
+      tags:
+        - topology
+
+      responses:
+        200:
+          description: Topology location retrieved.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+    post:
+      summary: Create topology location (currently not implemented).
+      description: |
+        Create a hierarchy of locations.
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: TopologyLocation
+          in: body
+          description: |
+            A new hierachy of topology locations to be created.
+            'type must be one of SITE / ROOM / RACK'
+          required: true
+          schema:
+            $ref: '#/definitions/topologyLocation'
+      tags:
+        - topology
+
+      responses:
+        200:
+          description: Topology location created.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+            
+    put:
+      summary: Assigns a list of devices. (not implemented)
+      description: |
+        Assigns a list of devices to the location
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: devices
+          in: body
+          description: devices to be assigned to the location
+          required: true
+          schema:
+            $ref: '#/definitions/devicesInTheLocation'
+      tags:
+        - topology
+
+      responses:
+        200:
+          description: Devices successfully assigned to the location.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  
+  /topology/locations/LocationUUID:
+    put:
+      summary: Save Topology Map
+      description: |
+        Updates the location with the topology map JOINTjs json (NOTE, Assign devices and save topology map can be done on the same request)
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: requestId
+          in: query
+          type: string
+          description: Request identifier.
+          required: true
+        - name: topologyMap
+          in: body
+          description: devices to be assigned to the location
+          required: true
+          schema:
+            $ref: '#/definitions/topologyMap'
+      tags:
+        - topology
+
+      responses:
+        200:
+          description: Topology map updated.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  
+  
+# Advanced search (event / traps / alarms from the log)
+  /nms/advancedsearch:
+    get:
+      summary: Advanced search
+      description: |
+        Search for all info of specified categories (e.g. traps).
+      parameters:
+        - name: Authorization
+          in: header
+          description: User Authorization
+          required: true
+          type: string
+        - name: search
+          in: query
+          type: string
+          description: |
+            a json string specifying the search target (not working since swagger does not support appending json object to url).
+            'test data:'
+            'search: {"categories":["alarm/alarm"],"pageSize":500,"requestedPage":1,"queryCriteria":[{"fieldName":"description","relation":"CONTAIN_ANY","value":"SFP"}]}'
+      tags:
+        - advanced search
+            
+      responses:
+        200:
+          description: All data of the categories received.
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+
+
+definitions:
+
+# User info parameters
+  login:
+    type: object
+    required:
+      - action
+    properties:
+      action:
+        $ref: '#/definitions/userLoginInfo'
+
+  userLoginInfo:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+        
+  userCreation:
+    type: object
+    required:
+      - user
+    properties:
+      user:
+        $ref: '#/definitions/userCreationInfo'
+        
+  userCreationInfo:
+    type: object
+    required:
+      - uuid
+      - firstName
+      - lastName
+      - phoneNumber
+      - email
+      - userName
+      - password
+      - jobTitle
+      - active
+    properties:
+      uuid:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber:
+        type: string
+      email:
+        type: string
+      userName:
+        type: string
+      password:
+        type: string
+      jobTitle:
+        type: string
+      active:
+        type: boolean
+  
+# Alarm parameters
+  alarmConfig:
+    type: object
+    required:
+      - configuration
+      - eventsConfigs
+    properties:
+      configuration:
+        $ref: '#/definitions/configSpec'
+      eventsConfigs:
+        type: array
+        items:
+          $ref: '#/definitions/eventConfig'
+  
+  configSpec:
+    type: object
+    required:
+      - deviceUuid
+      - description
+      - enable
+      - sounding
+      - sendToExternal
+      - severity
+    properties:
+      deviceUuid:
+        type: string
+      description:
+        type: string
+      enable:
+        type: boolean
+      sounding:
+        type: boolean
+      sendToExternal:
+        type: boolean
+      severity:
+        type: array
+        items:
+          $ref: '#/definitions/severity'
+  
+  severity:
+    type: object
+    required:
+      - uuid
+      - label
+      - labelKey
+    properties:
+      uuid:
+        type: string
+      label:
+        type: string
+      labelKey:
+        type: string
+      
+  eventConfig:
+    type: object
+    required:
+      - description
+      - severity
+      - eventId
+      - deviceModelId
+    properties:
+      description:
+        type: string
+      severity:
+        type: number
+        format: int32
+      eventId:
+        type: number
+        format: int32
+      deviceModelId:
+        type: number
+        format: int32
+  
+# Topology parameters
+# Currently not implemented
+  layer:
+    type: object
+  
+  topologyLocation:
+    type: object
+    required:
+      - name
+      - type
+      - childLocations
+    properties:
+      name:
+        type: string
+      type:
+        description: SITE / ROOM / RACK
+        type: string
+      childLocations:
+        type: array
+        items:
+          $ref: '#/definitions/topologyLocation'
+          
+  devicesInTheLocation:
+    type: object
+    required:
+      - deviceUuids
+    properties:
+      deviceUuids:
+        type: array
+        items:
+          type: string
+          
+  topologyMap:
+    type: object
+    required:
+      - topologyMapJson
+    properties:
+      topologyMapJson:
+        type: string
+  
+# Database search query parameters
+  query:
+    type: object
+    required:
+      - queryString
+      - includeRefiners
+    properties:
+      queryString:
+        type: string
+      includeRefiners:
+        type: string
+
+# Device discovery parameters
+  DeviceDiscovery:
+    type: object
+    required:
+      - roString
+      - rwString
+      - address
+      - correlationId
+    properties:
+      roString:
+        type: string
+      rwString:
+        type: string
+      address:
+        type: string
+      correlationId:
+        type: string
+
+  InventoryDeviceNumber:
+    type: object
+    required:
+      - number
+    properties:
+      number:
+        type: string
+
+# Traps retrieving parameters
+  TrapNumber:
+    type: object
+    required:
+      - number
+    properties:
+      number:
+        type: string
+
+# Advanced search parameters (currently not used)
+  advancedSearch:
+    type: object
+    required:
+      - categories
+      - pageSize
+      - requestedPage
+      - queryCriteria
+      - fields
+    properties:
+      categories:
+        type: array
+        items:
+          type: string
+      pageSize:
+        type: number
+        format: int32
+      requestedPage:
+        type: number
+        format: int32
+      queryCriteria:
+        type: array
+        items:
+          $ref: '#/definitions/queryCriteriaItem'
+      fields:
+        type: number
+        format: int32
+      
+  queryCriteriaItem:
+    type: object
+    required:
+      - fieldName
+      - relation
+      - value
+      - lowerBoundValue
+      - upperBoundValue
+    properties:
+      fieldName:
+        type: string
+        format: string
+      relation:
+        type: string
+        format: string
+      value:
+        type: string
+        format: string
+      lowerBoundValue:
+        type: number
+        format: int32
+      upperBoundValue:
+        type: number
+        format: int32
+
+# Error models
+  errorModel:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+        
